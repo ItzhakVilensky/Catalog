@@ -39,5 +39,10 @@ namespace Catalog.Repositiories
             return items.Where(item => item.Id == guid)
                         .SingleOrDefault();
         }
+
+        public void CreateItem(Item item)
+        {
+            items.Add(item);
+        }
     }
 }

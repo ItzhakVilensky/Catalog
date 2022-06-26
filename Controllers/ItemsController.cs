@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]")] // [[items]]
     public class ItemsController : ControllerBase
     {
         private readonly IItemsRepository repository;
@@ -36,6 +36,22 @@ namespace Catalog.Controllers
                 return NotFound("Not Found sadly :( ");
             }
             return item.AsDto();
+        }
+
+        [HttpPost]
+        public ActionResult<ItemDto> CreateItem(CreateItemDto itemDto)
+        {
+            Item item = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = itemDto.Name,
+                Price = itemDto.Price,
+                CreatedDate = DateTimeOffset.UtcNow
+            };
+            repository.CreateItem(item);
+            return CreatedAtAction(nameof(GetItem),
+                                   new { Id = item.Id },
+                                   item.AsDto());
         }
     }
 }
