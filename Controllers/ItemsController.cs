@@ -53,5 +53,41 @@ namespace Catalog.Controllers
                                    new { Id = item.Id },
                                    item.AsDto());
         }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateItem(Guid id, UpdateItemDto itemDto)
+        {
+            var existingItem = repository.GetItem(id);
+
+            if (existingItem is null)
+            {
+                return NotFound();
+            }
+
+            Item updatedItem = existingItem with // with makes copy of a record (records are immutable objects)
+            {
+                Name = itemDto.Name,
+                Price = itemDto.Price
+            };
+
+            repository.UpdateItem(updatedItem);
+
+            return NoContent(); // HTTP 204
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteItem(Guid id)
+        {
+            var existingItem = repository.GetItem(id);
+
+            if (existingItem is null)
+            {
+                return NotFound();
+            }
+
+            repository.DeleteItem(id);
+
+            return NoContent(); // HTTP 204
+        }
     }
 }
