@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Catalog.Entities;
 
 namespace Catalog.Repositiories
@@ -32,29 +33,36 @@ namespace Catalog.Repositiories
             }
         };
 
-        public IEnumerable<Item> GetItems() => items;
-
-        public Item GetItem(Guid guid)
+        public async Task<IEnumerable<Item>> GetItemsAsync()
         {
-            return items.Where(item => item.Id == guid)
-                        .SingleOrDefault();
+            return await Task.FromResult(items);
         }
 
-        public void CreateItem(Item item)
+        public async Task<Item> GetItemAsync(Guid guid)
+        {
+            var item = items.Where(item => item.Id == guid)
+                            .SingleOrDefault();
+            return await Task.FromResult(item);
+        }
+
+        public async Task CreateItemAsync(Item item)
         {
             items.Add(item);
+            await Task.CompletedTask;
         }
 
-        public void UpdateItem(Item item)
+        public async Task UpdateItemAsync(Item item)
         {
             var index = items.FindIndex(existingIten => existingIten.Id == item.Id);
             items[index] = item;
+            await Task.CompletedTask;
         }
 
-        public void DeleteItem(Guid id)
+        public async Task DeleteItemAsync(Guid id)
         {
             var index = items.FindIndex(existingIten => existingIten.Id == id);
             items.RemoveAt(index);
+            await Task.CompletedTask;
         }
     }
 }
