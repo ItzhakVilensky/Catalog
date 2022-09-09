@@ -29,7 +29,9 @@ namespace Catalog
             BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String));
 
 
-            // docker run -d --rm --name mongo -p 27017:27017 -v mongodbdata:/data/db mongo
+            // docker run -d --rm --name mongo -p 27017:27017 -v mongodbdata:/data/db mongo 
+            // -e MONGO_INITDB_ROOT_USERNAME=mongoadmin 
+            // -e MONGO_INITDB_ROOT_PASSWORD=Pass#word1 mongo
             services.AddSingleton<IMongoClient>(serviceProvider =>
             {
                 var settings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
@@ -38,7 +40,7 @@ namespace Catalog
 
             services.AddSingleton<IItemsRepository, MongoDbItemsRepository>(); //  InMemItemsRepository
 
-            services.AddControllers(options => 
+            services.AddControllers(options =>
             {
                 options.SuppressAsyncSuffixInActionNames = false;
             });
